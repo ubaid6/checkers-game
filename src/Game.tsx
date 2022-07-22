@@ -5,20 +5,34 @@ import Draggable from 'react-draggable';
 
 
 class Square extends React.Component<any, any> {
-  constructor (props:any) {
-    super(props);
-    this.state = {
-      piece: "empty",
-      color: "null"
-    };
-  }
 
   render() {
-    return (
-      // <button className={this.props.className}></button>
-      <div className={this.props.className}>
-      </div>
+    if (this.props.piece === "null")
+      return (
+        <div className="square white"></div>
+      )
+    
+    if (this.props.piece === "white")
+        return (
+          <div className="square black">
+            <Draggable>
+              <div className="piece white"></div>
+            </Draggable>
+          </div>
+        )
+    
+    if (this.props.piece === "red") {
+      return (
+        <div className="square black">
+          <Draggable>
+            <div className="piece red"></div>
+          </Draggable>
+        </div>
+      )
+    }
 
+    return (
+      <div className="square black"></div>
     )
   }
 }
@@ -28,8 +42,8 @@ class Board extends React.Component<any, any> {
 
 
 
-  renderSquare(color:string, piece:string) {
-    return <Square className={color}/>;
+  renderSquare(piece:string) {
+    return <Square piece={piece}/>;
   }
 
   makeBoard(boardState:array) {
@@ -37,7 +51,7 @@ class Board extends React.Component<any, any> {
     for (let i=0; i<8; i++) {
       var row:any[] = new Array(8);
       for (let j=0; j<8; j++) {
-        if (boardState[i][j])
+        if (boardState[i][j] === "null")
           row.push(this.renderSquare("square white"));
         else
           row.push(this.renderSquare("square black"));
