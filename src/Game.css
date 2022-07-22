@@ -1,22 +1,58 @@
-.white-square {
-  width:50px;
-  height: 50px;
-  background-color: #ffffff;
-  text-align: center;
+.square {
+  width:100px;
+  height: 100px;
   font-size: 10px;
-  padding:0px;
-  margin-right: -2px;
+  text-align: right;
   margin-top: -2px;
-  margin-bottom: -2px;
+  margin-bottom: -3px;
+  border: none;
+  outline: none;
+  display:inline-block;
+  text-align: right;
 }
 
-.black-square {
-  width:50px;
-  height: 50px;
-  background-color: #644f4f;
-  text-align: center;
-  font-size: 10px;
-  padding:0px;
-  margin-right: -2px;
-  margin-top: -2px;
+.square.white {
+  background-color: #ffffff;
+}
+
+.square.black {
+  background-color: rgb(0, 85, 0);
+}
+
+/* .square:hover {
+  background-color: rgb(0, 202, 253);
+  cursor:grab;
+} */
+
+.square:focus {
+  background-color: green;
+}
+
+.piece {
+  width:80px;
+  height:80px;
+  border-radius:100px;
+  left: 60px;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.piece.white {
+  background: rgb(138, 0, 0);
+}
+
+
+
+.board {
+  text-align:center;
+  border: solid black 3px;
+  background-color: red;
+  width: 800px;
+  height: 790px;
+}
+
+.game {
+  text-align:center;
+  padding-left: 500px;
+  padding-top: 100px;
 }
