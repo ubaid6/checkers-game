@@ -53,8 +53,12 @@ class Board extends React.Component<any, any> {
       for (let j=0; j<8; j++) {
         if (boardState[i][j] === "null")
           row.push(this.renderSquare("null"));
+        else if (boardState[i][j] === "empty")
+          row.push(this.renderSquare("empty"));
+        else if (boardState[i][j] === "red")
+          row.push(this.renderSquare("red"))
         else
-          row.push(this.renderSquare("red"));
+          row.push(this.renderSquare("white"));
       }
       boardRows.push(
         <div>
