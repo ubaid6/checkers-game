@@ -1,6 +1,5 @@
 import React from 'react';
 import './Game.css';
-import Draggable from 'react-draggable';
 
 
 
@@ -87,17 +86,61 @@ class Game extends React.Component<any, any> {
     this.state = {
       boardState: [],
       isBoardInitialized: false,
-      pieceLoaded: null
+      pieceLoaded: "null",
+      pieceLoadedCoords: []
     }
   }
+
+  hasPiece(i:number, j:number):boolean {
+    if (this.state.boardState[i][j] === "empty")
+      return false;
+    else return true;
+  }
+
+  isValidMove(piece:string, i:number, j:number):boolean {
+    switch(this.state.pieceLoaded) {
+      case "whiteKing":
+        if (!this.hasPiece(i, j)) return true;
+    }
+
+
+    return false;
+  }
+
+  makeMove(i:number, j:number) {
+
+    var tempState:Array<Array<string>> = [...this.state.boardState];
+    const piece:string = this.state.pieceLoaded;
+
+    if (this.isValidMove(piece, i, j)) {
+      tempState[i][j] = piece;
+
+      var iPrev = this.state.pieceLoadedCoords[0];
+      var jPrev = this.state.pieceLoadedCoords[1];
+      tempState[iPrev][jPrev] = "empty";
+
+      this.setState({
+        boardState : [...tempState],
+        pieceLoaded : "null",
+        // pieceLoadedCoords : []
+      }, () => console.log("moved"));
+    }
+  }
+
 
   handleClick(index: Array<number>) {
     const i: number = index[0];
     const j: number = index[1];
 
     const piece:string = this.state.boardState[i][j];
-    this.setState({ pieceLoaded: piece});
 
+    if (this.state.pieceLoaded === "null" || this.state.pieceLoaded === "empty") {
+      this.setState({
+        pieceLoaded: piece,
+        pieceLoadedCoords: index
+      }, () => console.log("loaded"));
+    }
+    else this.makeMove(i, j);
   }
 
 
