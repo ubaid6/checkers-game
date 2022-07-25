@@ -9,56 +9,56 @@ class Square extends React.Component<any, any> {
   render() {
     if (this.props.piece === "null")
       return (
-        <div className="square white"></div>
+        <div 
+          className="square white"
+          onClick={this.props.onClick}
+        >
+        </div>
       )
-    
+
     if (this.props.piece === "white")
-        return (
-          <div className="square black">
-            <Draggable>
-              <div className="piece white"></div>
-            </Draggable>
-          </div>
-        )
-    
+      return (
+        <div 
+          className="square green"
+          onClick={this.props.onClick}
+        >
+          <div className="piece white"></div>
+        </div>
+      )
+
     if (this.props.piece === "red") {
       return (
-        <div className="square black">
-          <Draggable>
-            <div className="piece red"></div>
-          </Draggable>
+        <div 
+          className="square green"
+          onClick={this.props.onClick}
+        >
+          <div className="piece red"></div>
         </div>
       )
     }
 
     return (
-      <div className="square black"></div>
+      <div 
+        className="square green"
+        onClick={this.props.onClick}
+      ></div>
     )
   }
 }
 
 class Board extends React.Component<any, any> {
 
-
-
-
-  renderSquare(piece:string) {
-    return <Square piece={piece}/>;
+  renderSquare(piece: string, index: Array<any>) {
+    return <Square piece={piece}
+      onClick={() => this.props.onClick(index)} />;
   }
 
-  makeBoard(boardState:Array<Array<string>>) {
-    var boardRows:any[] = new Array(8);
-    for (let i=0; i<8; i++) {
-      var row:any[] = new Array(8);
-      for (let j=0; j<8; j++) {
-        if (boardState[i][j] === "null")
-          row.push(this.renderSquare("null"));
-        else if (boardState[i][j] === "empty")
-          row.push(this.renderSquare("empty"));
-        else if (boardState[i][j] === "red")
-          row.push(this.renderSquare("red"))
-        else
-          row.push(this.renderSquare("white"));
+  makeBoard(boardState: Array<Array<string>>) {
+    var boardRows: any[] = new Array(8);
+    for (let i = 0; i < 8; i++) {
+      var row: any[] = new Array(8);
+      for (let j = 0; j < 8; j++) {
+        row.push(this.renderSquare(boardState[i][j], [i, j]));
       }
       boardRows.push(
         <div>
@@ -66,17 +66,14 @@ class Board extends React.Component<any, any> {
         </div>
       )
     }
-
     return boardRows;
-
   }
 
   render() {
-    // console.log(this.props.boardState);
     return (
-        <div className="board">
-          {this.makeBoard(this.props.boardState)}
-        </div>
+      <div className="board">
+        {this.makeBoard(this.props.boardState)}
+      </div>
     );
   }
 }
@@ -85,24 +82,36 @@ class Board extends React.Component<any, any> {
 
 class Game extends React.Component<any, any> {
 
-  constructor(props:any) {
+  constructor(props: any) {
     super(props);
     this.state = {
       boardState: [],
-      isBoardInitialized: false
+      isBoardInitialized: false,
+      pieceLoaded: null
     }
   }
 
-  initializeBoardState() {
-    var board:Array<Array<string>> = Array(8);
-    var isNull:boolean = true;
+  handleClick(index: Array<number>) {
+    const i: number = index[0];
+    const j: number = index[1];
 
-    for (let i=0; i<8; i++) {
+    const piece:string = this.state.boardState[i][j];
+    this.setState({ pieceLoaded: piece});
+
+  }
+
+
+
+  initializeBoardState() {
+    var board: Array<Array<string>> = Array(8);
+    var isNull: boolean = true;
+
+    for (let i = 0; i < 8; i++) {
       board[i] = new Array(8);
     }
 
-    for (let i=0; i<3; i++) {
-      for (let j=0; j<8; j++) {
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 8; j++) {
         if (isNull) board[i][j] = "null";
         else board[i][j] = "red";
         isNull = !isNull;
@@ -110,8 +119,8 @@ class Game extends React.Component<any, any> {
       isNull = !isNull;
     }
 
-    for (let i=3; i<5; i++) {
-      for (let j=0; j<8; j++) {
+    for (let i = 3; i < 5; i++) {
+      for (let j = 0; j < 8; j++) {
         if (isNull) board[i][j] = "null";
         else board[i][j] = "empty";
         isNull = !isNull;
@@ -119,34 +128,33 @@ class Game extends React.Component<any, any> {
       isNull = !isNull;
     }
 
-    for (let i=5; i<8; i++) {
-      for (let j=0; j<8; j++) {
+    for (let i = 5; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
         if (isNull) board[i][j] = "null";
         else board[i][j] = "white";
         isNull = !isNull;
       }
       isNull = !isNull;
-    } 
+    }
 
-    this.setState({boardState:board});
-    this.setState({isBoardInitialized:true});
+    this.setState({ boardState: board });
+    this.setState({ isBoardInitialized: true });
   }
 
   render() {
     if (!this.state.isBoardInitialized) {
       this.initializeBoardState();
-      console.log(this.state.isBoardInitialized);
-      console.log(this.state.boardState);
     }
 
     else
-    return (
-      <div className="game">
-        <Board
-          boardState = {this.state.boardState}
-        />
-      </div>
-    );
+      return (
+        <div className="game">
+          <Board
+            boardState={this.state.boardState}
+            onClick={this.handleClick.bind(this)}
+          />
+        </div>
+      );
   }
 }
 

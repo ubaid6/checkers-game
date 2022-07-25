@@ -15,18 +15,18 @@
   background-color: #ffffff;
 }
 
-.square.black {
+.square.green {
   background-color: rgb(0, 85, 0);
 }
 
-/* .square:hover {
+.square:hover {
   background-color: rgb(0, 202, 253);
-  cursor:grab;
-} */
-
-.square:focus {
-  background-color: green;
+  cursor:pointer;
 }
+
+/* .square:focus {
+  background-color: green;
+} */
 
 .piece {
   width:80px;
