@@ -24,10 +24,6 @@
   cursor:pointer;
 }
 
-/* .square:focus {
-  background-color: green;
-} */
-
 .piece {
   width:80px;
   height:80px;

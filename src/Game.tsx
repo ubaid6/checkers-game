@@ -15,7 +15,7 @@ class Square extends React.Component<any, any> {
         </div>
       )
 
-    if (this.props.piece === "white")
+    if (this.props.piece === "whiteKing")
       return (
         <div 
           className="square green"
@@ -98,11 +98,17 @@ class Game extends React.Component<any, any> {
   }
 
   isValidMove(piece:string, i:number, j:number):boolean {
+    var [iC, jC] = this.state.pieceLoadedCoords;
+
     switch(this.state.pieceLoaded) {
       case "whiteKing":
-        if (!this.hasPiece(i, j)) return true;
+        if (this.hasPiece(i, j)) return false;
+        else {
+          var diffI:number = Math.abs(i - iC);
+          var diffJ:number = Math.abs(j - jC);
+          if (diffI === diffJ) return true;
+        }
     }
-
 
     return false;
   }
@@ -122,7 +128,6 @@ class Game extends React.Component<any, any> {
       this.setState({
         boardState : [...tempState],
         pieceLoaded : "null",
-        // pieceLoadedCoords : []
       }, () => console.log("moved"));
     }
   }
@@ -134,12 +139,16 @@ class Game extends React.Component<any, any> {
 
     const piece:string = this.state.boardState[i][j];
 
-    if (this.state.pieceLoaded === "null" || this.state.pieceLoaded === "empty") {
+    if ((piece === "empty" && this.state.pieceLoaded === "null") || 
+        piece === "null") return;
+
+    if (this.state.pieceLoaded === "null") {
       this.setState({
         pieceLoaded: piece,
         pieceLoadedCoords: index
       }, () => console.log("loaded"));
     }
+
     else this.makeMove(i, j);
   }
 
@@ -174,7 +183,7 @@ class Game extends React.Component<any, any> {
     for (let i = 5; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
         if (isNull) board[i][j] = "null";
-        else board[i][j] = "white";
+        else board[i][j] = "whiteKing";
         isNull = !isNull;
       }
       isNull = !isNull;
