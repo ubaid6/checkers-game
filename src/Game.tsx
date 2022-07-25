@@ -6,6 +6,7 @@ import './Game.css';
 class Square extends React.Component<any, any> {
 
   render() {
+
     if (this.props.piece === "null")
       return (
         <div 
@@ -15,7 +16,7 @@ class Square extends React.Component<any, any> {
         </div>
       )
 
-    if (this.props.piece === "whiteKing")
+    if (this.props.piece === "white")
       return (
         <div 
           className="square green"
@@ -99,15 +100,22 @@ class Game extends React.Component<any, any> {
 
   isValidMove(piece:string, i:number, j:number):boolean {
     var [iC, jC] = this.state.pieceLoadedCoords;
+    var diffI:number = Math.abs(i - iC);
+    var diffJ:number = Math.abs(j - jC);
 
     switch(this.state.pieceLoaded) {
       case "whiteKing":
+      case "redKing":
         if (this.hasPiece(i, j)) return false;
-        else {
-          var diffI:number = Math.abs(i - iC);
-          var diffJ:number = Math.abs(j - jC);
-          if (diffI === diffJ) return true;
-        }
+        if (diffI === diffJ) return true;
+        break;
+
+      case "white":
+        if (i > iC) return false;
+        if (diffI === diffJ && diffI === 1) return true;
+
+      
+
     }
 
     return false;
@@ -127,9 +135,13 @@ class Game extends React.Component<any, any> {
 
       this.setState({
         boardState : [...tempState],
-        pieceLoaded : "null",
       }, () => console.log("moved"));
     }
+
+    this.setState({
+      pieceLoaded : "null"
+    }, () => console.log("piece unloaded"));
+
   }
 
 
@@ -183,7 +195,7 @@ class Game extends React.Component<any, any> {
     for (let i = 5; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
         if (isNull) board[i][j] = "null";
-        else board[i][j] = "whiteKing";
+        else board[i][j] = "white";
         isNull = !isNull;
       }
       isNull = !isNull;
