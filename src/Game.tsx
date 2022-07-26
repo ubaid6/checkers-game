@@ -42,7 +42,7 @@ class Square extends React.Component<any, any> {
           className="square green"
           onClick={this.props.onClick}
         >
-          <div className="piece white">K</div>
+          <div className="piece white king"></div>
         </div>
       )
 

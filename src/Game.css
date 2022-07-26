@@ -1,15 +1,12 @@
 .square {
-  box-sizing: border-box;
   width:100px;
   height: 100px;
-  font-size: 10px;
-  text-align: right;
   margin-top: -2px;
   margin-bottom: -3px;
   border: none;
   outline: none;
   display:inline-block;
-  text-align: right;
+  text-align: center;
 }
 
 .square.white {
@@ -26,19 +23,27 @@
 }
 
 .piece {
-  text-align: center;
-  font-size: 15px;
-  width:80px;
-  height:80px;
+  width:70px;
+  height:70px;
   border-radius:50px;
   margin-left: 10px;
   margin-top: 10px;
-  max-width: 80px;
-  max-height: 80px;
+  border: solid black 5px;
+  -moz-box-shadow:    inset 0 0 5px #000000;
+  -webkit-box-shadow: inset 0 0 5px #000000;
+  box-shadow:         inset 0 0 5px #000000;
 }
 
 .piece.white {
   background: rgb(255, 255, 255);
+}
+
+.piece.white.king {
+  border: solid rgb(247, 210, 4) 5px;
+}
+
+.piece.red.king {
+  border: solid rgb(247, 210, 4) 5px;
 }
 
 .piece.red {
