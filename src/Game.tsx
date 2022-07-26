@@ -9,7 +9,7 @@ class Square extends React.Component<any, any> {
 
     if (this.props.piece === "null")
       return (
-        <div 
+        <div
           className="square white"
           onClick={this.props.onClick}
         >
@@ -18,7 +18,7 @@ class Square extends React.Component<any, any> {
 
     if (this.props.piece === "white")
       return (
-        <div 
+        <div
           className="square green"
           onClick={this.props.onClick}
         >
@@ -28,7 +28,7 @@ class Square extends React.Component<any, any> {
 
     if (this.props.piece === "red") {
       return (
-        <div 
+        <div
           className="square green"
           onClick={this.props.onClick}
         >
@@ -38,7 +38,7 @@ class Square extends React.Component<any, any> {
     }
 
     return (
-      <div 
+      <div
         className="square green"
         onClick={this.props.onClick}
       ></div>
@@ -92,22 +92,22 @@ class Game extends React.Component<any, any> {
     }
   }
 
-  getPiece(i:number, j:number):string {
+  getPiece(i: number, j: number): string {
     return this.state.boardState[i][j];
   }
 
-  hasPiece(i:number, j:number):boolean {
+  hasPiece(i: number, j: number): boolean {
     if (this.state.boardState[i][j] === "empty")
       return false;
     else return true;
   }
 
-  isValidMove(piece:string, i:number, j:number):boolean {
+  isValidMove(piece: string, i: number, j: number): boolean {
     var [iC, jC] = this.state.pieceLoadedCoords;
-    var diffI:number = Math.abs(i - iC);
-    var diffJ:number = Math.abs(j - jC);
+    var diffI: number = Math.abs(i - iC);
+    var diffJ: number = Math.abs(j - jC);
 
-    switch(this.state.pieceLoaded) {
+    switch (this.state.pieceLoaded) {
       case "whiteKing":
       case "redKing":
         if (this.hasPiece(i, j)) return false;
@@ -116,26 +116,39 @@ class Game extends React.Component<any, any> {
 
       case "white":
         if (i > iC) return false;
+        if (this.hasPiece(i, j)) return false;
         if (diffI === diffJ && diffI === 1) return true;
         if (diffI === diffJ && diffI === 2) {
-          if (j > jC && this.getPiece(j - 1, i + 1) === "red")
+          if (j > jC && this.getPiece(i + 1, j - 1) === "red")
             return true;
-          if (j < jC && this.getPiece(j + 1, i + 1) === "red")
+          if (j < jC && this.getPiece(i + 1, j + 1) === "red")
             return true;
         }
         break;
 
-      
+      case "red":
+        if (i < iC) return false;
+        if (this.hasPiece(i, j)) return false;
+        if (diffI === diffJ && diffI === 1) return true;
+        if (diffI === diffJ && diffI === 2) {
+          if (j > jC && this.getPiece(i - 1, j - 1) === "white")
+            return true;
+          if (j < jC && this.getPiece(i - 1, j + 1) === "white")
+            return true;
+        }
+        break;
+
+
 
     }
 
     return false;
   }
 
-  makeMove(i:number, j:number) {
+  makeMove(i: number, j: number) {
 
-    var tempState:Array<Array<string>> = [...this.state.boardState];
-    const piece:string = this.state.pieceLoaded;
+    var tempState: Array<Array<string>> = [...this.state.boardState];
+    const piece: string = this.state.pieceLoaded;
 
     if (this.isValidMove(piece, i, j)) {
       tempState[i][j] = piece;
@@ -145,12 +158,12 @@ class Game extends React.Component<any, any> {
       tempState[iPrev][jPrev] = "empty";
 
       this.setState({
-        boardState : [...tempState],
+        boardState: [...tempState],
       }, () => console.log("moved"));
     }
 
     this.setState({
-      pieceLoaded : "null"
+      pieceLoaded: "null"
     }, () => console.log("piece unloaded"));
 
   }
@@ -160,10 +173,10 @@ class Game extends React.Component<any, any> {
     const i: number = index[0];
     const j: number = index[1];
 
-    const piece:string = this.state.boardState[i][j];
+    const piece: string = this.state.boardState[i][j];
 
-    if ((piece === "empty" && this.state.pieceLoaded === "null") || 
-        piece === "null") return;
+    if ((piece === "empty" && this.state.pieceLoaded === "null") ||
+      piece === "null") return;
 
     if (this.state.pieceLoaded === "null") {
       this.setState({
