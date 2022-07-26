@@ -1,4 +1,5 @@
 .square {
+  box-sizing: border-box;
   width:100px;
   height: 100px;
   font-size: 10px;
@@ -25,12 +26,15 @@
 }
 
 .piece {
+  text-align: center;
+  font-size: 15px;
   width:80px;
   height:80px;
-  border-radius:100px;
-  left: 60px;
+  border-radius:50px;
   margin-left: 10px;
   margin-top: 10px;
+  max-width: 80px;
+  max-height: 80px;
 }
 
 .piece.white {
@@ -40,7 +44,6 @@
 .piece.red {
   background: rgb(100, 1, 1);
 }
-
 
 
 .board {

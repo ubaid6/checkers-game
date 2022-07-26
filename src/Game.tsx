@@ -26,7 +26,7 @@ class Square extends React.Component<any, any> {
         </div>
       )
 
-    if (this.props.piece === "red") {
+    if (this.props.piece === "red")
       return (
         <div
           className="square green"
@@ -35,7 +35,26 @@ class Square extends React.Component<any, any> {
           <div className="piece red"></div>
         </div>
       )
-    }
+
+    if (this.props.piece === "whiteKing")
+      return (
+        <div
+          className="square green"
+          onClick={this.props.onClick}
+        >
+          <div className="piece white">K</div>
+        </div>
+      )
+
+    if (this.props.piece === "redKing")
+      return (
+        <div
+          className="square green"
+          onClick={this.props.onClick}
+        >
+          <div className="piece red"></div>
+        </div>
+      )
 
     return (
       <div
@@ -94,6 +113,12 @@ class Game extends React.Component<any, any> {
     }
   }
 
+  checkGameOver(): boolean {
+    if (this.state.redPieces === 0 || this.state.whitePieces === 0)
+      return true;
+    return false;
+  }
+
   getPiece(i: number, j: number): string {
     return this.state.boardState[i][j];
   }
@@ -104,7 +129,7 @@ class Game extends React.Component<any, any> {
     else return true;
   }
 
-  removeJumpedPiece(i: number, j: number):any {
+  removeJumpedPiece(i: number, j: number): any {
     var tempState = [...this.state.boardState];
     tempState[i][j] = "empty";
 
@@ -131,14 +156,12 @@ class Game extends React.Component<any, any> {
         if (diffI === diffJ && diffI === 2) {
           if (j > jC && this.getPiece(i + 1, j - 1) === "red") {
             this.setState({
-              pieceJumped: [i + 1, j - 1],
               redPieces: this.state.redPieces - 1
             }, this.removeJumpedPiece(i + 1, j - 1));
             return true;
           }
           if (j < jC && this.getPiece(i + 1, j + 1) === "red") {
             this.setState({
-              pieceJumped: [i + 1, j + 1],
               redPieces: this.state.redPieces - 1
             }, this.removeJumpedPiece(i + 1, j + 1));
             return true;
@@ -177,7 +200,12 @@ class Game extends React.Component<any, any> {
     const piece: string = this.state.pieceLoaded;
 
     if (this.isValidMove(piece, i, j)) {
-      tempState[i][j] = piece;
+      if (piece === "white" && i === 0)
+        tempState[i][j] = "whiteKing";
+      else if (piece === "red" && i === 7)
+        tempState[i][j] = "redKing";
+      else
+        tempState[i][j] = piece;
 
       var iPrev = this.state.pieceLoadedCoords[0];
       var jPrev = this.state.pieceLoadedCoords[1];
@@ -251,13 +279,27 @@ class Game extends React.Component<any, any> {
       isNull = !isNull;
     }
 
-    this.setState({ boardState: board });
-    this.setState({ isBoardInitialized: true });
+    this.setState({
+      boardState: board,
+      isBoardInitialized: true
+    });
   }
 
   render() {
     if (!this.state.isBoardInitialized) {
       this.initializeBoardState();
+    }
+    
+
+    else if (this.checkGameOver()) {
+      return (
+        <div className="game">
+          <Board
+            boardState={this.state.boardState}
+            onClick={() => true}
+          />
+        </div>
+      );
     }
 
     else
