@@ -92,6 +92,10 @@ class Game extends React.Component<any, any> {
     }
   }
 
+  getPiece(i:number, j:number):string {
+    return this.state.boardState[i][j];
+  }
+
   hasPiece(i:number, j:number):boolean {
     if (this.state.boardState[i][j] === "empty")
       return false;
@@ -113,6 +117,13 @@ class Game extends React.Component<any, any> {
       case "white":
         if (i > iC) return false;
         if (diffI === diffJ && diffI === 1) return true;
+        if (diffI === diffJ && diffI === 2) {
+          if (j > jC && this.getPiece(j - 1, i + 1) === "red")
+            return true;
+          if (j < jC && this.getPiece(j + 1, i + 1) === "red")
+            return true;
+        }
+        break;
 
       
 
