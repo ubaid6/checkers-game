@@ -112,7 +112,8 @@ class Game extends React.Component<any, any> {
       whitePieces: 12,
       whiteTurn: true,
       isJumpPossible: false,
-      isJumpPossibleCoords: []
+      isJumpPossibleCoords: [],
+      isJumpPossiblePiece: ""
     }
   }
 
@@ -140,64 +141,39 @@ class Game extends React.Component<any, any> {
     return;
   }
 
-  isJumpPossible() {
-    var jumpPossible: boolean = false;
+  isJumpPossible(): Array<Array<number>> {
     var jumpCoords: Array<Array<number>> = [];
-    if (this.state.whiteTurn)
+    if (this.state.whiteTurn) {
       for (let i = 0; i < 7; i++) {
         for (let j = 0; j < 7; j++) {
           if (this.getPiece(i, j) === "white") {
             if (this.getPiece(i - 1, j - 1) === "red" && this.getPiece(i - 2, j - 2) === "empty") {
-              jumpCoords = this.state.isJumpPossibleCoords.concat([[i, j]]);
-              this.setState({
-                isJumpPossible: true,
-                isJumpPossibleCoords: jumpCoords
-              }, () => true)
-              jumpPossible = true;
+              jumpCoords.push([i, j]);
             }
             if (this.getPiece(i - 1, j + 1) === "red" && this.getPiece(i - 2, j + 2) === "empty") {
-              jumpCoords = this.state.isJumpPossibleCoords.concat([[i, j]]);
-              this.setState({
-                isJumpPossible: true,
-                isJumpPossibleCoords: jumpCoords
-              }, () => true)
-              jumpPossible = true;
-            }
-          }
-        }
-      }
-
-    else {
-      for (let i = 0; i < 7; i++) {
-        for (let j = 0; j < 7; j++) {
-          if (this.getPiece(i, j) === "red") {
-            if (this.getPiece(i + 1, j - 1) === "white" && this.getPiece(i + 2, j - 2) === "empty") {
-              jumpCoords = this.state.isJumpPossibleCoords.concat([[i, j]]);
-              this.setState({
-                isJumpPossible: true,
-                isJumpPossibleCoords: jumpCoords
-              }, () => true)
-              jumpPossible = true;
-            }
-            if (this.getPiece(i + 1, j + 1) === "white" && this.getPiece(i + 2, j + 2) === "empty") {
-              jumpCoords = this.state.isJumpPossibleCoords.concat([[i, j]]);
-              this.setState({
-                isJumpPossible: true,
-                isJumpPossibleCoords: jumpCoords
-              }, () => true)
-              jumpPossible = true;
+              jumpCoords.push([i, j]);
             }
           }
         }
       }
     }
 
-    if (!jumpPossible)
-      this.setState({
-        isJumpPossible: false,
-        isJumpPossibleCoords: []
-      }, () => true);
+    else {
+      for (let i = 0; i < 7; i++) {
+        for (let j = 0; j < 7; j++) {
+          if (this.getPiece(i, j) === "red") {
+            if (this.getPiece(i + 1, j - 1) === "white" && this.getPiece(i + 2, j - 2) === "empty") {
+              jumpCoords.push([i, j]);
+            }
+            if (this.getPiece(i + 1, j + 1) === "white" && this.getPiece(i + 2, j + 2) === "empty") {
+              jumpCoords.push([i, j]);
+            }
+          }
+        }
+      }
+    }
 
+    return jumpCoords;
 
   }
 
@@ -360,11 +336,10 @@ class Game extends React.Component<any, any> {
       var [iPrev, jPrev] = this.state.pieceLoadedCoords;
       tempState[iPrev][jPrev] = "empty";
 
-      this.isJumpPossible();
-
       this.setState({
         boardState: [...tempState],
-        whiteTurn: this.state.isJumpPossible ? this.state.whiteTurn : !this.state.whiteTurn
+        // whiteTurn: this.state.isJumpPossible ? this.state.whiteTurn : !this.state.whiteTurn
+        whiteTurn: !this.state.whiteTurn
       }, () => console.log("moved"));
     }
 
@@ -379,13 +354,18 @@ class Game extends React.Component<any, any> {
     const [i, j] = index;
     const piece: string = this.state.boardState[i][j];
 
-    console.log(index);
-    if (this.state.isJumpPossible &&
-      !this.state.isJumpPossibleCoords.includes(index)) {
-      console.log("Jump is possible");
-      console.log(this.state.isJumpPossibleCoords);
+    const jumpPossible: Array<Array<number>> = this.isJumpPossible();
+    var canJump: boolean = false;
+
+    for (let x = 0; x < jumpPossible.length; x++)
+      if (jumpPossible[x][0] === i && jumpPossible[x][1] === j)
+        canJump = true;
+
+    if (canJump === false && jumpPossible.length !== 0 && piece !== "empty") {
+      console.log("Jump possible");
       return;
     }
+
 
     if ((piece === "white" || piece === "whiteKing") && !this.state.whiteTurn) return;
     if ((piece === "red" || piece === "redKing") && this.state.whiteTurn) return;
