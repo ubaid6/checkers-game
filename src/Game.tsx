@@ -109,7 +109,10 @@ class Game extends React.Component<any, any> {
       pieceLoaded: "null",
       pieceLoadedCoords: [],
       redPieces: 12,
-      whitePieces: 12
+      whitePieces: 12,
+      whiteTurn: true,
+      isJumpPossible: false,
+      isJumpPossibleCoords: []
     }
   }
 
@@ -137,8 +140,70 @@ class Game extends React.Component<any, any> {
     return;
   }
 
-  isValidMove(piece: string, i: number, j: number): boolean {
+  isJumpPossible() {
+    var jumpPossible: boolean = false;
+    var jumpCoords: Array<Array<number>> = [];
+    if (this.state.whiteTurn)
+      for (let i = 0; i < 7; i++) {
+        for (let j = 0; j < 7; j++) {
+          if (this.getPiece(i, j) === "white") {
+            if (this.getPiece(i - 1, j - 1) === "red" && this.getPiece(i - 2, j - 2) === "empty") {
+              jumpCoords = this.state.isJumpPossibleCoords.concat([[i, j]]);
+              this.setState({
+                isJumpPossible: true,
+                isJumpPossibleCoords: jumpCoords
+              }, () => true)
+              jumpPossible = true;
+            }
+            if (this.getPiece(i - 1, j + 1) === "red" && this.getPiece(i - 2, j + 2) === "empty") {
+              jumpCoords = this.state.isJumpPossibleCoords.concat([[i, j]]);
+              this.setState({
+                isJumpPossible: true,
+                isJumpPossibleCoords: jumpCoords
+              }, () => true)
+              jumpPossible = true;
+            }
+          }
+        }
+      }
+
+    else {
+      for (let i = 0; i < 7; i++) {
+        for (let j = 0; j < 7; j++) {
+          if (this.getPiece(i, j) === "red") {
+            if (this.getPiece(i + 1, j - 1) === "white" && this.getPiece(i + 2, j - 2) === "empty") {
+              jumpCoords = this.state.isJumpPossibleCoords.concat([[i, j]]);
+              this.setState({
+                isJumpPossible: true,
+                isJumpPossibleCoords: jumpCoords
+              }, () => true)
+              jumpPossible = true;
+            }
+            if (this.getPiece(i + 1, j + 1) === "white" && this.getPiece(i + 2, j + 2) === "empty") {
+              jumpCoords = this.state.isJumpPossibleCoords.concat([[i, j]]);
+              this.setState({
+                isJumpPossible: true,
+                isJumpPossibleCoords: jumpCoords
+              }, () => true)
+              jumpPossible = true;
+            }
+          }
+        }
+      }
+    }
+
+    if (!jumpPossible)
+      this.setState({
+        isJumpPossible: false,
+        isJumpPossibleCoords: []
+      }, () => true);
+
+
+  }
+
+  isValidMove(i: number, j: number): boolean {
     var [iC, jC] = this.state.pieceLoadedCoords;
+    var piece = this.state.pieceLoaded;
     var diffI: number = Math.abs(i - iC);
     var diffJ: number = Math.abs(j - jC);
 
@@ -152,11 +217,13 @@ class Game extends React.Component<any, any> {
         var piecesJumped: number = 0;
         var pieceJumpedX: number = 0;
         var pieceJumpedY: number = 0;
+        var diffX: number = 0;
+        var diffY: number = 0;
         if (i > iC && j > jC) {
           for (let x = i; x > iC; x--) {
             for (let y = j; y > jC; y--) {
-              var diffX: number = Math.abs(x - iC);
-              var diffY: number = Math.abs(y - jC);
+              diffX = Math.abs(x - iC);
+              diffY = Math.abs(y - jC);
               if (diffX === diffY) {
                 if (this.hasPiece(x, y) && this.getPiece(x, y) !== piece) {
                   pieceJumpedX = x;
@@ -174,8 +241,8 @@ class Game extends React.Component<any, any> {
         if (i > iC && j < jC) {
           for (let x = i; x > iC; x--) {
             for (let y = j; y < jC; y++) {
-              var diffX: number = Math.abs(x - iC);
-              var diffY: number = Math.abs(y - jC);
+              diffX = Math.abs(x - iC);
+              diffY = Math.abs(y - jC);
               if (diffX === diffY) {
                 if (this.hasPiece(x, y) && this.getPiece(x, y) !== piece) {
                   pieceJumpedX = x;
@@ -193,8 +260,8 @@ class Game extends React.Component<any, any> {
         if (i < iC && j > jC) {
           for (let x = i; x < iC; x++) {
             for (let y = j; y > jC; y--) {
-              var diffX: number = Math.abs(x - iC);
-              var diffY: number = Math.abs(y - jC);
+              diffX = Math.abs(x - iC);
+              diffY = Math.abs(y - jC);
               if (diffX === diffY) {
                 if (this.hasPiece(x, y) && this.getPiece(x, y) !== piece) {
                   pieceJumpedX = x;
@@ -212,8 +279,8 @@ class Game extends React.Component<any, any> {
         if (i < iC && j < jC) {
           for (let x = i; x < iC; x++) {
             for (let y = j; y < jC; y++) {
-              var diffX: number = Math.abs(x - iC);
-              var diffY: number = Math.abs(y - jC);
+              diffX = Math.abs(x - iC);
+              diffY = Math.abs(y - jC);
               if (diffX === diffY) {
                 if (this.hasPiece(x, y) && this.getPiece(x, y) !== piece) {
                   pieceJumpedX = x;
@@ -228,9 +295,9 @@ class Game extends React.Component<any, any> {
         }
 
         if (piecesJumped > 1) return false;
-        this.removeJumpedPiece(pieceJumpedX, pieceJumpedY);
+        if (piecesJumped > 0)
+          this.removeJumpedPiece(pieceJumpedX, pieceJumpedY);
         return true;
-        break;
 
       case "white":
         if (i > iC) return false;
@@ -282,7 +349,7 @@ class Game extends React.Component<any, any> {
     var tempState: Array<Array<string>> = [...this.state.boardState];
     const piece: string = this.state.pieceLoaded;
 
-    if (this.isValidMove(piece, i, j)) {
+    if (this.isValidMove(i, j)) {
       if (piece === "white" && i === 0)
         tempState[i][j] = "whiteKing";
       else if (piece === "red" && i === 7)
@@ -290,28 +357,38 @@ class Game extends React.Component<any, any> {
       else
         tempState[i][j] = piece;
 
-      var iPrev = this.state.pieceLoadedCoords[0];
-      var jPrev = this.state.pieceLoadedCoords[1];
+      var [iPrev, jPrev] = this.state.pieceLoadedCoords;
       tempState[iPrev][jPrev] = "empty";
 
+      this.isJumpPossible();
+
       this.setState({
-        boardState: [...tempState]
+        boardState: [...tempState],
+        whiteTurn: this.state.isJumpPossible ? this.state.whiteTurn : !this.state.whiteTurn
       }, () => console.log("moved"));
     }
 
     this.setState({
-      pieceLoaded: "null"
+      pieceLoaded: "null",
     }, () => console.log("piece unloaded"));
 
   }
 
 
   handleClick(index: Array<number>) {
-    const i: number = index[0];
-    const j: number = index[1];
-
+    const [i, j] = index;
     const piece: string = this.state.boardState[i][j];
 
+    console.log(index);
+    if (this.state.isJumpPossible &&
+      !this.state.isJumpPossibleCoords.includes(index)) {
+      console.log("Jump is possible");
+      console.log(this.state.isJumpPossibleCoords);
+      return;
+    }
+
+    if ((piece === "white" || piece === "whiteKing") && !this.state.whiteTurn) return;
+    if ((piece === "red" || piece === "redKing") && this.state.whiteTurn) return;
     if ((piece === "empty" && this.state.pieceLoaded === "null") ||
       piece === "null") return;
 
@@ -338,7 +415,7 @@ class Game extends React.Component<any, any> {
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 8; j++) {
         if (isNull) board[i][j] = "null";
-        else board[i][j] = "redKing";
+        else board[i][j] = "red";
         isNull = !isNull;
       }
       isNull = !isNull;
@@ -356,7 +433,7 @@ class Game extends React.Component<any, any> {
     for (let i = 5; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
         if (isNull) board[i][j] = "null";
-        else board[i][j] = "whiteKing";
+        else board[i][j] = "white";
         isNull = !isNull;
       }
       isNull = !isNull;
