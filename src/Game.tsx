@@ -52,7 +52,7 @@ class Square extends React.Component<any, any> {
           className="square green"
           onClick={this.props.onClick}
         >
-          <div className="piece red"></div>
+          <div className="piece red king"></div>
         </div>
       )
 
@@ -146,7 +146,90 @@ class Game extends React.Component<any, any> {
       case "whiteKing":
       case "redKing":
         if (this.hasPiece(i, j)) return false;
-        if (diffI === diffJ) return true;
+        if (diffI !== diffJ) return false;
+
+        // Right down
+        var piecesJumped: number = 0;
+        var pieceJumpedX: number = 0;
+        var pieceJumpedY: number = 0;
+        if (i > iC && j > jC) {
+          for (let x = i; x > iC; x--) {
+            for (let y = j; y > jC; y--) {
+              var diffX: number = Math.abs(x - iC);
+              var diffY: number = Math.abs(y - jC);
+              if (diffX === diffY) {
+                if (this.hasPiece(x, y) && this.getPiece(x, y) !== piece) {
+                  pieceJumpedX = x;
+                  pieceJumpedY = y;
+                  piecesJumped += 1;
+                }
+                if (this.hasPiece(x, y) && this.getPiece(x, y) === piece)
+                  return false;
+              }
+            }
+          }
+        }
+
+        // Left Down
+        if (i > iC && j < jC) {
+          for (let x = i; x > iC; x--) {
+            for (let y = j; y < jC; y++) {
+              var diffX: number = Math.abs(x - iC);
+              var diffY: number = Math.abs(y - jC);
+              if (diffX === diffY) {
+                if (this.hasPiece(x, y) && this.getPiece(x, y) !== piece) {
+                  pieceJumpedX = x;
+                  pieceJumpedY = y;
+                  piecesJumped += 1;
+                }
+                if (this.hasPiece(x, y) && this.getPiece(x, y) === piece)
+                  return false;
+              }
+            }
+          }
+        }
+
+        // Right up
+        if (i < iC && j > jC) {
+          for (let x = i; x < iC; x++) {
+            for (let y = j; y > jC; y--) {
+              var diffX: number = Math.abs(x - iC);
+              var diffY: number = Math.abs(y - jC);
+              if (diffX === diffY) {
+                if (this.hasPiece(x, y) && this.getPiece(x, y) !== piece) {
+                  pieceJumpedX = x;
+                  pieceJumpedY = y;
+                  piecesJumped += 1;
+                }
+                if (this.hasPiece(x, y) && this.getPiece(x, y) === piece)
+                  return false;
+              }
+            }
+          }
+        }
+
+        // Left Up
+        if (i < iC && j < jC) {
+          for (let x = i; x < iC; x++) {
+            for (let y = j; y < jC; y++) {
+              var diffX: number = Math.abs(x - iC);
+              var diffY: number = Math.abs(y - jC);
+              if (diffX === diffY) {
+                if (this.hasPiece(x, y) && this.getPiece(x, y) !== piece) {
+                  pieceJumpedX = x;
+                  pieceJumpedY = y;
+                  piecesJumped += 1;
+                }
+                if (this.hasPiece(x, y) && this.getPiece(x, y) === piece)
+                  return false;
+              }
+            }
+          }
+        }
+
+        if (piecesJumped > 1) return false;
+        this.removeJumpedPiece(pieceJumpedX, pieceJumpedY);
+        return true;
         break;
 
       case "white":
@@ -255,7 +338,7 @@ class Game extends React.Component<any, any> {
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 8; j++) {
         if (isNull) board[i][j] = "null";
-        else board[i][j] = "red";
+        else board[i][j] = "redKing";
         isNull = !isNull;
       }
       isNull = !isNull;
@@ -273,7 +356,7 @@ class Game extends React.Component<any, any> {
     for (let i = 5; i < 8; i++) {
       for (let j = 0; j < 8; j++) {
         if (isNull) board[i][j] = "null";
-        else board[i][j] = "white";
+        else board[i][j] = "whiteKing";
         isNull = !isNull;
       }
       isNull = !isNull;
@@ -289,7 +372,7 @@ class Game extends React.Component<any, any> {
     if (!this.state.isBoardInitialized) {
       this.initializeBoardState();
     }
-    
+
 
     else if (this.checkGameOver()) {
       return (
