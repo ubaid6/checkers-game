@@ -144,7 +144,7 @@ class Game extends React.Component<any, any> {
   isJumpPossible(): Array<Array<number>> {
     var jumpCoords: Array<Array<number>> = [];
     if (this.state.whiteTurn) {
-      for (let i = 0; i < 7; i++) {
+      for (let i = 2; i < 7; i++) {
         for (let j = 0; j < 7; j++) {
           if (this.getPiece(i, j) === "white") {
             if (!(j === 1 && i === 2))
@@ -160,7 +160,7 @@ class Game extends React.Component<any, any> {
     }
 
     else {
-      for (let i = 0; i < 7; i++) {
+      for (let i = 0; i < 5; i++) {
         for (let j = 0; j < 7; j++) {
           if (this.getPiece(i, j) === "red") {
             if (!(j === 0 && i === 5))
