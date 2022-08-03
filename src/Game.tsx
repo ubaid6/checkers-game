@@ -112,12 +112,23 @@ class Game extends React.Component<any, any> {
       whitePieces: 12,
       whiteTurn: true,
       pieceJumped: false,
+      winner: "",
     }
   }
 
   checkGameOver(): boolean {
-    if (this.state.redPieces === 0 || this.state.whitePieces === 0)
+    if (this.state.redPieces === 0) {
+      this.setState({
+        winner: "White",
+      }, () => console.log("White wins!"));
       return true;
+    }
+    if (this.state.whitePieces === 0) {
+      this.setState({
+        winner: "Red",
+      }, () => console.log("Red wins!"));
+      return true;
+    }
     return false;
   }
 
@@ -138,7 +149,7 @@ class Game extends React.Component<any, any> {
 
     this.setState({
       boardState: tempState,
-      pieceJumped : true,
+      pieceJumped: true,
     });
     return;
   }
@@ -443,12 +454,20 @@ class Game extends React.Component<any, any> {
 
     else {
       var clickHandler;
-      if (this.checkGameOver())
+      var turn: string = this.state.whiteTurn ? "White" : "Red";
+
+      if (this.checkGameOver()) {
         clickHandler = () => true;
+      }
       else
         clickHandler = this.handleClick.bind(this);
+
       return (
         <div className="game">
+          <div>
+            Turn: {turn}<br></br>
+            Winner: {this.state.winner}
+          </div>
           <Board
             boardState={this.state.boardState}
             onClick={clickHandler}
