@@ -147,12 +147,13 @@ class Game extends React.Component<any, any> {
       for (let i = 0; i < 7; i++) {
         for (let j = 0; j < 7; j++) {
           if (this.getPiece(i, j) === "white") {
-            if (this.getPiece(i - 1, j - 1) === "red" && this.getPiece(i - 2, j - 2) === "empty") {
-              jumpCoords.push([i, j]);
-            }
-            if (this.getPiece(i - 1, j + 1) === "red" && this.getPiece(i - 2, j + 2) === "empty") {
-              jumpCoords.push([i, j]);
-            }
+            if (!(j === 1 && i === 2))
+              if (this.getPiece(i - 1, j - 1) === "red" && this.getPiece(i - 2, j - 2) === "empty")
+                jumpCoords.push([i, j]);
+
+            if (!(j === 7 && i === 2))
+              if (this.getPiece(i - 1, j + 1) === "red" && this.getPiece(i - 2, j + 2) === "empty")
+                jumpCoords.push([i, j]);
           }
         }
       }
@@ -162,12 +163,13 @@ class Game extends React.Component<any, any> {
       for (let i = 0; i < 7; i++) {
         for (let j = 0; j < 7; j++) {
           if (this.getPiece(i, j) === "red") {
-            if (this.getPiece(i + 1, j - 1) === "white" && this.getPiece(i + 2, j - 2) === "empty") {
-              jumpCoords.push([i, j]);
-            }
-            if (this.getPiece(i + 1, j + 1) === "white" && this.getPiece(i + 2, j + 2) === "empty") {
-              jumpCoords.push([i, j]);
-            }
+            if (!(j === 0 && i === 5))
+              if (this.getPiece(i + 1, j - 1) === "white" && this.getPiece(i + 2, j - 2) === "empty")
+                jumpCoords.push([i, j]);
+
+            if (!(j === 6 && i === 5))
+              if (this.getPiece(i + 1, j + 1) === "white" && this.getPiece(i + 2, j + 2) === "empty")
+                jumpCoords.push([i, j]);
           }
         }
       }
@@ -280,13 +282,13 @@ class Game extends React.Component<any, any> {
         if (this.hasPiece(i, j)) return false;
         if (diffI === diffJ && diffI === 1) return true;
         if (diffI === diffJ && diffI === 2) {
-          if (j > jC && this.getPiece(i + 1, j - 1) === "red") {
+          if (j > jC && this.getPiece(i + 1, j - 1) !== piece) {
             this.setState({
               redPieces: this.state.redPieces - 1
             }, this.removeJumpedPiece(i + 1, j - 1));
             return true;
           }
-          if (j < jC && this.getPiece(i + 1, j + 1) === "red") {
+          if (j < jC && this.getPiece(i + 1, j + 1) !== piece) {
             this.setState({
               redPieces: this.state.redPieces - 1
             }, this.removeJumpedPiece(i + 1, j + 1));
@@ -300,13 +302,13 @@ class Game extends React.Component<any, any> {
         if (this.hasPiece(i, j)) return false;
         if (diffI === diffJ && diffI === 1) return true;
         if (diffI === diffJ && diffI === 2) {
-          if (j > jC && this.getPiece(i - 1, j - 1) === "white") {
+          if (j > jC && this.getPiece(i - 1, j - 1) !== piece) {
             this.setState({
               whitePieces: this.state.whitePieces - 1
             }, this.removeJumpedPiece(i - 1, j - 1));
             return true;
           }
-          if (j < jC && this.getPiece(i - 1, j + 1) === "white") {
+          if (j < jC && this.getPiece(i - 1, j + 1) !== piece) {
             this.setState({
               whitePieces: this.state.whitePieces - 1
             }, this.removeJumpedPiece(i - 1, j + 1));
