@@ -282,13 +282,13 @@ class Game extends React.Component<any, any> {
         if (this.hasPiece(i, j)) return false;
         if (diffI === diffJ && diffI === 1) return true;
         if (diffI === diffJ && diffI === 2) {
-          if (j > jC && this.getPiece(i + 1, j - 1) !== piece) {
+          if (j > jC && this.getPiece(i + 1, j - 1) !== ("red" || "redKing")) {
             this.setState({
               redPieces: this.state.redPieces - 1
             }, this.removeJumpedPiece(i + 1, j - 1));
             return true;
           }
-          if (j < jC && this.getPiece(i + 1, j + 1) !== piece) {
+          if (j < jC && this.getPiece(i + 1, j + 1) !== ("red" || "redKing")) {
             this.setState({
               redPieces: this.state.redPieces - 1
             }, this.removeJumpedPiece(i + 1, j + 1));
@@ -302,13 +302,13 @@ class Game extends React.Component<any, any> {
         if (this.hasPiece(i, j)) return false;
         if (diffI === diffJ && diffI === 1) return true;
         if (diffI === diffJ && diffI === 2) {
-          if (j > jC && this.getPiece(i - 1, j - 1) !== piece) {
+          if (j > jC && this.getPiece(i - 1, j - 1) !== ("white" || "whiteKing")) {
             this.setState({
               whitePieces: this.state.whitePieces - 1
             }, this.removeJumpedPiece(i - 1, j - 1));
             return true;
           }
-          if (j < jC && this.getPiece(i - 1, j + 1) !== piece) {
+          if (j < jC && this.getPiece(i - 1, j + 1) !== ("white" || "whiteKing")) {
             this.setState({
               whitePieces: this.state.whitePieces - 1
             }, this.removeJumpedPiece(i - 1, j + 1));
@@ -432,27 +432,21 @@ class Game extends React.Component<any, any> {
       this.initializeBoardState();
     }
 
-
-    else if (this.checkGameOver()) {
+    else {
+      var clickHandler;
+      if (this.checkGameOver())
+        clickHandler = () => true;
+      else
+        clickHandler = this.handleClick.bind(this);
       return (
         <div className="game">
           <Board
             boardState={this.state.boardState}
-            onClick={() => true}
+            onClick={clickHandler}
           />
         </div>
       );
     }
-
-    else
-      return (
-        <div className="game">
-          <Board
-            boardState={this.state.boardState}
-            onClick={this.handleClick.bind(this)}
-          />
-        </div>
-      );
   }
 }
 
