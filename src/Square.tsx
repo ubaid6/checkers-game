@@ -1,64 +1,61 @@
 import React from 'react';
 
 
-export class Square extends React.Component<any, any> {
+export const Square = (props: any): JSX.Element => {
 
-    render() {
-  
-      if (this.props.piece === "null")
+    if (props.piece === "null")
         return (
-          <div
-            className="square white"
-            onClick={this.props.onClick}
-          >
-          </div>
+            <div
+                className="square white"
+                onClick={props.onClick}
+            >
+            </div>
         )
-  
-      if (this.props.piece === "white")
+
+    if (props.piece === "white")
         return (
-          <div
-            className="square green"
-            onClick={this.props.onClick}
-          >
-            <div className="piece white"></div>
-          </div>
+            <div
+                className="square green"
+                onClick={props.onClick}
+            >
+                <div className="piece white"></div>
+            </div>
         )
-  
-      if (this.props.piece === "red")
+
+    if (props.piece === "red")
         return (
-          <div
-            className="square green"
-            onClick={this.props.onClick}
-          >
-            <div className="piece red"></div>
-          </div>
+            <div
+                className="square green"
+                onClick={props.onClick}
+            >
+                <div className="piece red"></div>
+            </div>
         )
-  
-      if (this.props.piece === "whiteKing")
+
+    if (props.piece === "whiteKing")
         return (
-          <div
-            className="square green"
-            onClick={this.props.onClick}
-          >
-            <div className="piece white king"></div>
-          </div>
+            <div
+                className="square green"
+                onClick={props.onClick}
+            >
+                <div className="piece white king"></div>
+            </div>
         )
-  
-      if (this.props.piece === "redKing")
+
+    if (props.piece === "redKing")
         return (
-          <div
-            className="square green"
-            onClick={this.props.onClick}
-          >
-            <div className="piece red king"></div>
-          </div>
+            <div
+                className="square green"
+                onClick={props.onClick}
+            >
+                <div className="piece red king"></div>
+            </div>
         )
-  
-      return (
+
+    return (
         <div
-          className="square green"
-          onClick={this.props.onClick}
+            className="square green"
+            onClick={props.onClick}
         ></div>
-      )
-    }
-  }
+    )
+}
