@@ -179,7 +179,7 @@ export const Game = (props: any): JSX.Element => {
             setWhitePieces(whitePieces - 1);
         return true;
 
-        
+
 
       case "white":
         if (i > iC) return false;
@@ -342,7 +342,11 @@ export const Game = (props: any): JSX.Element => {
       <div className="game">
         <div>
           Turn: {turn}<br></br>
-          Winner: {gameWinner}
+          {"Red Pieces: " + redPieces}<br></br>
+          {"White Pieces: " + whitePieces}
+          <h3>
+          {gameWinner.length !== 0 ? "Winner: " + gameWinner : ""}
+          </h3>
         </div>
         <Board
           boardState={boardState}
