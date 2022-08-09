@@ -12,15 +12,15 @@ export const Game = (props: any): JSX.Element => {
   const [redPieces, setRedPieces] = useState(12);
   const [whitePieces, setWhitePieces] = useState(12);
   const [whiteTurn, setWhiteTurn] = useState(true);
-  const [winner, setWinner] = useState("");
 
 
-  const checkGameOver = (): boolean => {
+  const checkGameOver = (): string => {
     if (redPieces === 0)
-      setWinner("White");
+      return "White";
     if (whitePieces === 0)
-      setWinner("Red");
-    return false;
+      return "Red";
+
+    return "";
   }
 
   const getPiece = (i: number, j: number): string => {
@@ -49,11 +49,11 @@ export const Game = (props: any): JSX.Element => {
           if (getPiece(i, j) === "white") {
             if (!(j === 1 && i === 2))
               if (getPiece(i - 1, j - 1) === "red" && getPiece(i - 2, j - 2) === "empty")
-                jumpCoords.push([i, j]);
+                jumpCoords.concat([i, j]);
 
             if (!(j === 7 && i === 2))
               if (getPiece(i - 1, j + 1) === "red" && getPiece(i - 2, j + 2) === "empty")
-                jumpCoords.push([i, j]);
+                jumpCoords.concat([i, j]);
           }
         }
       }
@@ -65,11 +65,11 @@ export const Game = (props: any): JSX.Element => {
           if (getPiece(i, j) === "red") {
             if (!(j === 0 && i === 5))
               if (getPiece(i + 1, j - 1) === "white" && getPiece(i + 2, j - 2) === "empty")
-                jumpCoords.push([i, j]);
+                jumpCoords.concat([i, j]);
 
             if (!(j === 6 && i === 5))
               if (getPiece(i + 1, j + 1) === "white" && getPiece(i + 2, j + 2) === "empty")
-                jumpCoords.push([i, j]);
+                jumpCoords.concat([i, j]);
           }
         }
       }
@@ -104,14 +104,13 @@ export const Game = (props: any): JSX.Element => {
             for (let y = j; y > jC; y--) {
               diffX = Math.abs(x - iC);
               diffY = Math.abs(y - jC);
-              if (diffX === diffY) {
-                if (hasPiece(x, y) && getPiece(x, y) !== piece) {
-                  pieceJumpedX = x;
-                  pieceJumpedY = y;
-                  piecesJumped += 1;
-                }
-                if (hasPiece(x, y) && getPiece(x, y) === piece)
-                  return false;
+              if (diffX !== diffY) continue;
+              if (piece === "redKing" && (getPiece(x, y) === "red" || getPiece(x, y) === "redKing")) return false;
+              if (piece === "whiteKing" && (getPiece(x, y) === "white" || getPiece(x, y) === "whiteKing")) return false;
+              if (hasPiece(x, y)) {
+                pieceJumpedX = x;
+                pieceJumpedY = y;
+                piecesJumped += 1;
               }
             }
           }
@@ -123,14 +122,13 @@ export const Game = (props: any): JSX.Element => {
             for (let y = j; y < jC; y++) {
               diffX = Math.abs(x - iC);
               diffY = Math.abs(y - jC);
-              if (diffX === diffY) {
-                if (hasPiece(x, y) && getPiece(x, y) !== piece) {
-                  pieceJumpedX = x;
-                  pieceJumpedY = y;
-                  piecesJumped += 1;
-                }
-                if (hasPiece(x, y) && getPiece(x, y) === piece)
-                  return false;
+              if (diffX !== diffY) continue;
+              if (piece === "redKing" && (getPiece(x, y) === "red" || getPiece(x, y) === "redKing")) return false;
+              if (piece === "whiteKing" && (getPiece(x, y) === "white" || getPiece(x, y) === "whiteKing")) return false;
+              if (hasPiece(x, y)) {
+                pieceJumpedX = x;
+                pieceJumpedY = y;
+                piecesJumped += 1;
               }
             }
           }
@@ -142,14 +140,13 @@ export const Game = (props: any): JSX.Element => {
             for (let y = j; y > jC; y--) {
               diffX = Math.abs(x - iC);
               diffY = Math.abs(y - jC);
-              if (diffX === diffY) {
-                if (hasPiece(x, y) && getPiece(x, y) !== piece) {
-                  pieceJumpedX = x;
-                  pieceJumpedY = y;
-                  piecesJumped += 1;
-                }
-                if (hasPiece(x, y) && getPiece(x, y) === piece)
-                  return false;
+              if (diffX !== diffY) continue;
+              if (piece === "redKing" && (getPiece(x, y) === "red" || getPiece(x, y) === "redKing")) return false;
+              if (piece === "whiteKing" && (getPiece(x, y) === "white" || getPiece(x, y) === "whiteKing")) return false;
+              if (hasPiece(x, y)) {
+                pieceJumpedX = x;
+                pieceJumpedY = y;
+                piecesJumped += 1;
               }
             }
           }
@@ -161,14 +158,13 @@ export const Game = (props: any): JSX.Element => {
             for (let y = j; y < jC; y++) {
               diffX = Math.abs(x - iC);
               diffY = Math.abs(y - jC);
-              if (diffX === diffY) {
-                if (hasPiece(x, y) && getPiece(x, y) !== piece) {
-                  pieceJumpedX = x;
-                  pieceJumpedY = y;
-                  piecesJumped += 1;
-                }
-                if (hasPiece(x, y) && getPiece(x, y) === piece)
-                  return false;
+              if (diffX !== diffY) continue;
+              if (piece === "redKing" && (getPiece(x, y) === "red" || getPiece(x, y) === "redKing")) return false;
+              if (piece === "whiteKing" && (getPiece(x, y) === "white" || getPiece(x, y) === "whiteKing")) return false;
+              if (hasPiece(x, y)) {
+                pieceJumpedX = x;
+                pieceJumpedY = y;
+                piecesJumped += 1;
               }
             }
           }
@@ -177,7 +173,13 @@ export const Game = (props: any): JSX.Element => {
         if (piecesJumped > 1) return false;
         if (piecesJumped > 0)
           removeJumpedPiece(pieceJumpedX, pieceJumpedY);
+          if (piece === "whiteKing")
+            setRedPieces(redPieces - 1);
+          else
+            setWhitePieces(whitePieces - 1);
         return true;
+
+        
 
       case "white":
         if (i > iC) return false;
@@ -270,10 +272,6 @@ export const Game = (props: any): JSX.Element => {
       piece === "null") return;
 
     if (pieceLoaded === "null") {
-      // setState({
-      //   pieceLoaded: piece,
-      //   pieceLoadedCoords: index
-      // }, () => console.log("loaded"));
       setPieceLoaded(piece);
       setPieceLoadedCoords(index);
     }
@@ -333,7 +331,8 @@ export const Game = (props: any): JSX.Element => {
     var clickHandler;
     var turn: string = whiteTurn ? "White" : "Red";
 
-    if (checkGameOver()) {
+    var gameWinner: string = checkGameOver();
+    if (gameWinner.length !== 0) {
       clickHandler = () => true;
     }
     else
@@ -343,7 +342,7 @@ export const Game = (props: any): JSX.Element => {
       <div className="game">
         <div>
           Turn: {turn}<br></br>
-          Winner: {winner}
+          Winner: {gameWinner}
         </div>
         <Board
           boardState={boardState}
