@@ -1,75 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Game.css';
-import {Board} from './Board';
+import { Board } from './Board';
 
 
-class Game extends React.Component<any, any> {
+export const Game = (props: any): JSX.Element => {
 
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      boardState: [],
-      isBoardInitialized: false,
-      pieceLoaded: "null",
-      pieceLoadedCoords: [],
-      redPieces: 12,
-      whitePieces: 12,
-      whiteTurn: true,
-      pieceJumped: false,
-      winner: "",
-    }
-  }
+  const [boardState, setBoardState] = useState<Array<Array<string>>>([]);
+  const [isBoardInitialized, setIsBoardInitialized] = useState(false);
+  const [pieceLoaded, setPieceLoaded] = useState("null");
+  const [pieceLoadedCoords, setPieceLoadedCoords] = useState<Array<number>>([]);
+  const [redPieces, setRedPieces] = useState(12);
+  const [whitePieces, setWhitePieces] = useState(12);
+  const [whiteTurn, setWhiteTurn] = useState(true);
+  const [winner, setWinner] = useState("");
 
-  checkGameOver(): boolean {
-    if (this.state.redPieces === 0) {
-      this.setState({
-        winner: "White",
-      }, () => console.log("White wins!"));
-      return true;
-    }
-    if (this.state.whitePieces === 0) {
-      this.setState({
-        winner: "Red",
-      }, () => console.log("Red wins!"));
-      return true;
-    }
+
+  const checkGameOver = (): boolean => {
+    if (redPieces === 0)
+      setWinner("White");
+    if (whitePieces === 0)
+      setWinner("Red");
     return false;
   }
 
-  getPiece(i: number, j: number): string {
-    return this.state.boardState[i][j];
+  const getPiece = (i: number, j: number): string => {
+    return boardState[i][j];
   }
 
-  hasPiece(i: number, j: number): boolean {
-    if (this.state.boardState[i][j] === "empty")
+  const hasPiece = (i: number, j: number): boolean => {
+    if (boardState[i][j] === "empty")
       return false;
     else return true;
   }
 
-  removeJumpedPiece(i: number, j: number): any {
-    var tempState = [...this.state.boardState];
+  const removeJumpedPiece = (i: number, j: number): any => {
+    var tempState: Array<Array<string>> = [...boardState];
     tempState[i][j] = "empty";
 
-
-    this.setState({
-      boardState: tempState,
-      pieceJumped: true,
-    });
+    setBoardState([...tempState]);
     return;
   }
 
-  isJumpPossible(): Array<Array<number>> {
+  const isJumpPossible = (): Array<Array<number>> => {
     var jumpCoords: Array<Array<number>> = [];
-    if (this.state.whiteTurn) {
+    if (whiteTurn) {
       for (let i = 2; i < 7; i++) {
         for (let j = 0; j < 7; j++) {
-          if (this.getPiece(i, j) === "white") {
+          if (getPiece(i, j) === "white") {
             if (!(j === 1 && i === 2))
-              if (this.getPiece(i - 1, j - 1) === "red" && this.getPiece(i - 2, j - 2) === "empty")
+              if (getPiece(i - 1, j - 1) === "red" && getPiece(i - 2, j - 2) === "empty")
                 jumpCoords.push([i, j]);
 
             if (!(j === 7 && i === 2))
-              if (this.getPiece(i - 1, j + 1) === "red" && this.getPiece(i - 2, j + 2) === "empty")
+              if (getPiece(i - 1, j + 1) === "red" && getPiece(i - 2, j + 2) === "empty")
                 jumpCoords.push([i, j]);
           }
         }
@@ -79,13 +62,13 @@ class Game extends React.Component<any, any> {
     else {
       for (let i = 0; i < 5; i++) {
         for (let j = 0; j < 7; j++) {
-          if (this.getPiece(i, j) === "red") {
+          if (getPiece(i, j) === "red") {
             if (!(j === 0 && i === 5))
-              if (this.getPiece(i + 1, j - 1) === "white" && this.getPiece(i + 2, j - 2) === "empty")
+              if (getPiece(i + 1, j - 1) === "white" && getPiece(i + 2, j - 2) === "empty")
                 jumpCoords.push([i, j]);
 
             if (!(j === 6 && i === 5))
-              if (this.getPiece(i + 1, j + 1) === "white" && this.getPiece(i + 2, j + 2) === "empty")
+              if (getPiece(i + 1, j + 1) === "white" && getPiece(i + 2, j + 2) === "empty")
                 jumpCoords.push([i, j]);
           }
         }
@@ -96,18 +79,18 @@ class Game extends React.Component<any, any> {
 
   }
 
-  isValidMove(i: number, j: number): boolean {
-    var [iC, jC] = this.state.pieceLoadedCoords;
-    var piece = this.state.pieceLoaded;
+  const isValidMove = (i: number, j: number): boolean => {
+    var [iC, jC] = pieceLoadedCoords;
+    var piece = pieceLoaded;
     var diffI: number = Math.abs(i - iC);
     var diffJ: number = Math.abs(j - jC);
-    var getPiece: string = "";
+    var gPiece: string = "";
 
     switch (piece) {
       case "whiteKing":
       case "redKing":
 
-        if (this.hasPiece(i, j)) return false;
+        if (hasPiece(i, j)) return false;
         if (diffI !== diffJ) return false;
 
         // Right down
@@ -122,12 +105,12 @@ class Game extends React.Component<any, any> {
               diffX = Math.abs(x - iC);
               diffY = Math.abs(y - jC);
               if (diffX === diffY) {
-                if (this.hasPiece(x, y) && this.getPiece(x, y) !== piece) {
+                if (hasPiece(x, y) && getPiece(x, y) !== piece) {
                   pieceJumpedX = x;
                   pieceJumpedY = y;
                   piecesJumped += 1;
                 }
-                if (this.hasPiece(x, y) && this.getPiece(x, y) === piece)
+                if (hasPiece(x, y) && getPiece(x, y) === piece)
                   return false;
               }
             }
@@ -141,12 +124,12 @@ class Game extends React.Component<any, any> {
               diffX = Math.abs(x - iC);
               diffY = Math.abs(y - jC);
               if (diffX === diffY) {
-                if (this.hasPiece(x, y) && this.getPiece(x, y) !== piece) {
+                if (hasPiece(x, y) && getPiece(x, y) !== piece) {
                   pieceJumpedX = x;
                   pieceJumpedY = y;
                   piecesJumped += 1;
                 }
-                if (this.hasPiece(x, y) && this.getPiece(x, y) === piece)
+                if (hasPiece(x, y) && getPiece(x, y) === piece)
                   return false;
               }
             }
@@ -160,12 +143,12 @@ class Game extends React.Component<any, any> {
               diffX = Math.abs(x - iC);
               diffY = Math.abs(y - jC);
               if (diffX === diffY) {
-                if (this.hasPiece(x, y) && this.getPiece(x, y) !== piece) {
+                if (hasPiece(x, y) && getPiece(x, y) !== piece) {
                   pieceJumpedX = x;
                   pieceJumpedY = y;
                   piecesJumped += 1;
                 }
-                if (this.hasPiece(x, y) && this.getPiece(x, y) === piece)
+                if (hasPiece(x, y) && getPiece(x, y) === piece)
                   return false;
               }
             }
@@ -179,12 +162,12 @@ class Game extends React.Component<any, any> {
               diffX = Math.abs(x - iC);
               diffY = Math.abs(y - jC);
               if (diffX === diffY) {
-                if (this.hasPiece(x, y) && this.getPiece(x, y) !== piece) {
+                if (hasPiece(x, y) && getPiece(x, y) !== piece) {
                   pieceJumpedX = x;
                   pieceJumpedY = y;
                   piecesJumped += 1;
                 }
-                if (this.hasPiece(x, y) && this.getPiece(x, y) === piece)
+                if (hasPiece(x, y) && getPiece(x, y) === piece)
                   return false;
               }
             }
@@ -193,26 +176,24 @@ class Game extends React.Component<any, any> {
 
         if (piecesJumped > 1) return false;
         if (piecesJumped > 0)
-          this.removeJumpedPiece(pieceJumpedX, pieceJumpedY);
+          removeJumpedPiece(pieceJumpedX, pieceJumpedY);
         return true;
 
       case "white":
         if (i > iC) return false;
-        if (this.hasPiece(i, j)) return false;
+        if (hasPiece(i, j)) return false;
         if (diffI === diffJ && diffI === 1) return true;
         if (diffI === diffJ && diffI === 2) {
-          getPiece = this.getPiece(i + 1, j - 1);
-          if (j > jC && (getPiece === "red" || getPiece === "redKing")) {
-            this.setState({
-              redPieces: this.state.redPieces - 1
-            }, this.removeJumpedPiece(i + 1, j - 1));
+          gPiece = getPiece(i + 1, j - 1);
+          if (j > jC && (gPiece === "red" || gPiece === "redKing")) {
+            setRedPieces(redPieces - 1);
+            removeJumpedPiece(i + 1, j - 1);
             return true;
           }
-          getPiece = this.getPiece(i + 1, j + 1);
-          if (j < jC && (getPiece === "red" || getPiece === "redKing")) {
-            this.setState({
-              redPieces: this.state.redPieces - 1
-            }, this.removeJumpedPiece(i + 1, j + 1));
+          gPiece = getPiece(i + 1, j + 1);
+          if (j < jC && (gPiece === "red" || gPiece === "redKing")) {
+            setRedPieces(redPieces - 1);
+            removeJumpedPiece(i + 1, j + 1);
             return true;
           }
         }
@@ -220,21 +201,19 @@ class Game extends React.Component<any, any> {
 
       case "red":
         if (i < iC) return false;
-        if (this.hasPiece(i, j)) return false;
+        if (hasPiece(i, j)) return false;
         if (diffI === diffJ && diffI === 1) return true;
         if (diffI === diffJ && diffI === 2) {
-          getPiece = this.getPiece(i - 1, j - 1);
-          if (j > jC && (getPiece === "white" || getPiece === "whiteKing")) {
-            this.setState({
-              whitePieces: this.state.whitePieces - 1
-            }, this.removeJumpedPiece(i - 1, j - 1));
+          gPiece = getPiece(i - 1, j - 1);
+          if (j > jC && (gPiece === "white" || gPiece === "whiteKing")) {
+            setWhitePieces(whitePieces - 1);
+            removeJumpedPiece(i - 1, j - 1);
             return true;
           }
-          getPiece = this.getPiece(i - 1, j + 1)
-          if (j < jC && (getPiece === "white" || getPiece === "whiteKing")) {
-            this.setState({
-              whitePieces: this.state.whitePieces - 1
-            }, this.removeJumpedPiece(i - 1, j + 1));
+          gPiece = getPiece(i - 1, j + 1);
+          if (j < jC && (gPiece === "white" || gPiece === "whiteKing")) {
+            setWhitePieces(whitePieces - 1);
+            removeJumpedPiece(i - 1, j + 1);
             return true;
           }
         }
@@ -245,12 +224,12 @@ class Game extends React.Component<any, any> {
     return false;
   }
 
-  makeMove(i: number, j: number) {
+  const makeMove = (i: number, j: number) => {
 
-    var tempState: Array<Array<string>> = [...this.state.boardState];
-    const piece: string = this.state.pieceLoaded;
+    var tempState: Array<Array<string>> = [...boardState];
+    const piece: string = pieceLoaded;
 
-    if (this.isValidMove(i, j)) {
+    if (isValidMove(i, j)) {
       if (piece === "white" && i === 0)
         tempState[i][j] = "whiteKing";
       else if (piece === "red" && i === 7)
@@ -258,29 +237,21 @@ class Game extends React.Component<any, any> {
       else
         tempState[i][j] = piece;
 
-      var [iPrev, jPrev] = this.state.pieceLoadedCoords;
+      var [iPrev, jPrev] = pieceLoadedCoords;
       tempState[iPrev][jPrev] = "empty";
 
-      this.setState({
-        boardState: [...tempState],
-        whiteTurn: !this.state.whiteTurn
-        // whiteTurn: (this.isJumpPossible().length !== 0 && this.state.pieceJumped) ? this.state.whiteTurn : !this.state.whiteTurn,
-        // pieceJumped : false,
-      }, () => console.log("moved"));
+      setBoardState([...tempState]);
+      setWhiteTurn(!whiteTurn);
     }
-
-    this.setState({
-      pieceLoaded: "null",
-    }, () => console.log("piece unloaded"));
-
+    setPieceLoaded("null");
   }
 
 
-  handleClick(index: Array<number>) {
+  const handleClick = (index: Array<number>) => {
     const [i, j] = index;
-    const piece: string = this.state.boardState[i][j];
+    const piece: string = boardState[i][j];
 
-    const jumpPossible: Array<Array<number>> = this.isJumpPossible();
+    const jumpPossible: Array<Array<number>> = isJumpPossible();
     var canJump: boolean = false;
 
     for (let x = 0; x < jumpPossible.length; x++)
@@ -293,24 +264,26 @@ class Game extends React.Component<any, any> {
     }
 
 
-    if ((piece === "white" || piece === "whiteKing") && !this.state.whiteTurn) return;
-    if ((piece === "red" || piece === "redKing") && this.state.whiteTurn) return;
-    if ((piece === "empty" && this.state.pieceLoaded === "null") ||
+    if ((piece === "white" || piece === "whiteKing") && !whiteTurn) return;
+    if ((piece === "red" || piece === "redKing") && whiteTurn) return;
+    if ((piece === "empty" && pieceLoaded === "null") ||
       piece === "null") return;
 
-    if (this.state.pieceLoaded === "null") {
-      this.setState({
-        pieceLoaded: piece,
-        pieceLoadedCoords: index
-      }, () => console.log("loaded"));
+    if (pieceLoaded === "null") {
+      // setState({
+      //   pieceLoaded: piece,
+      //   pieceLoadedCoords: index
+      // }, () => console.log("loaded"));
+      setPieceLoaded(piece);
+      setPieceLoadedCoords(index);
     }
 
-    else this.makeMove(i, j);
+    else makeMove(i, j);
   }
 
 
 
-  initializeBoardState() {
+  const initializeBoardState = (): void => {
     var board: Array<Array<string>> = Array(8);
     var isNull: boolean = true;
 
@@ -345,41 +318,43 @@ class Game extends React.Component<any, any> {
       isNull = !isNull;
     }
 
-    this.setState({
-      boardState: board,
-      isBoardInitialized: true
-    });
+    setBoardState(board);
+    setIsBoardInitialized(true);
   }
 
-  render() {
-    if (!this.state.isBoardInitialized) {
-      this.initializeBoardState();
+
+
+
+  if (!isBoardInitialized) {
+    initializeBoardState();
+  }
+
+  else {
+    var clickHandler;
+    var turn: string = whiteTurn ? "White" : "Red";
+
+    if (checkGameOver()) {
+      clickHandler = () => true;
     }
+    else
+      clickHandler = handleClick.bind(this);
 
-    else {
-      var clickHandler;
-      var turn: string = this.state.whiteTurn ? "White" : "Red";
-
-      if (this.checkGameOver()) {
-        clickHandler = () => true;
-      }
-      else
-        clickHandler = this.handleClick.bind(this);
-
-      return (
-        <div className="game">
-          <div>
-            Turn: {turn}<br></br>
-            Winner: {this.state.winner}
-          </div>
-          <Board
-            boardState={this.state.boardState}
-            onClick={clickHandler}
-          />
+    return (
+      <div className="game">
+        <div>
+          Turn: {turn}<br></br>
+          Winner: {winner}
         </div>
-      );
-    }
+        <Board
+          boardState={boardState}
+          onClick={clickHandler}
+        />
+      </div>
+    );
   }
+
+  return (<div></div>);
+
 }
 
 export default Game;
